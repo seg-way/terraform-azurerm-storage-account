@@ -108,7 +108,7 @@ variable "public_network_access_enabled" {
 }
 
 variable "firewall_bypass_ip_cidr" {
-  type = string
-  default = null
+  type = bool
+  default = false
   description = "(optional) describe your variable"
 }

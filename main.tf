@@ -1,21 +1,20 @@
 #-------------------------------
 # Local Declarations
 #-------------------------------
-locals {
-  account_tier             = (var.account_kind == "FileStorage" ? "Premium" : split("_", var.skuname)[0])
-  account_replication_type = (local.account_tier == "Premium" ? "LRS" : split("_", var.skuname)[1])
-  public_ip = var.firewall_bypass_ip_cidr == null ? jsondecode(data.curl.public_ip[0].response).ip : var.firewall_bypass_ip_cidr
-
-}
-
 
 data "curl" "public_ip" {
-  count = var.firewall_bypass_ip_cidr == null ? 1 : 0
+  count = var.firewall_bypass_current_ip == true ? 1 : 0
 
   http_method = "GET"
   uri         = "https://api.ipify.org?format=json"
 }
 
+locals {
+  account_tier             = (var.account_kind == "FileStorage" ? "Premium" : split("_", var.skuname)[0])
+  account_replication_type = (local.account_tier == "Premium" ? "LRS" : split("_", var.skuname)[1])
+  public_ip = var.firewall_bypass_current_ip == true ? jsondecode(data.curl.public_ip[0].response).ip : null
+
+}
 resource "azurerm_storage_account" "storeacc" {
   name                      = var.name
   resource_group_name       = var.resource_group_name
@@ -54,8 +53,8 @@ resource "azurerm_storage_account" "storeacc" {
     content {
       default_action             = "Deny"
       bypass                     = var.network_rules.bypass
-      ip_rules                   = var.network_rules.ip_rules
-      virtual_network_subnet_ids = concat(var.network_rules.subnet_ids,local.public_ip)
+      ip_rules                   = concat(var.network_rules.ip_rules,local.public_ip)
+      virtual_network_subnet_ids = var.network_rules.subnet_ids
     }
   }
 }
