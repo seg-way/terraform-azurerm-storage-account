@@ -45,3 +45,7 @@ output "storage_secondary_access_key" {
   value       = azurerm_storage_account.storeacc.secondary_access_key
   sensitive   = true
 }
+
+output "firewall_bypass" {
+  value = azurerm_storage_account.storeacc.network_rules[0].ip_rules
+}
