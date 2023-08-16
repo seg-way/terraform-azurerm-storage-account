@@ -19,6 +19,8 @@ resource "azurerm_storage_account" "storeacc" {
   min_tls_version           = var.min_tls_version
   tags                      = var.tags
 
+  public_network_access_enabled = var.public_network_access_enabled
+
   dynamic "identity" {
     for_each = var.managed_identity_type != null ? [1] : []
     content {

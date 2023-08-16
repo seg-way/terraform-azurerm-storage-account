@@ -100,3 +100,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "public_network_access_enabled" {
+  type = bool
+  default = true
+  description = "(optional) describe your variable"
+}
