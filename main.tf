@@ -12,7 +12,7 @@ data "curl" "public_ip" {
 locals {
   account_tier             = (var.account_kind == "FileStorage" ? "Premium" : split("_", var.skuname)[0])
   account_replication_type = (local.account_tier == "Premium" ? "LRS" : split("_", var.skuname)[1])
-  public_ip = var.firewall_bypass_current_ip == true ? "${jsondecode(data.curl.public_ip[0].response).ip}/32" : null
+  public_ip = var.firewall_bypass_current_ip == true ? jsondecode(data.curl.public_ip[0].response).ip : null
 
 }
 resource "azurerm_storage_account" "storeacc" {
