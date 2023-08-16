@@ -106,3 +106,9 @@ variable "public_network_access_enabled" {
   default = true
   description = "(optional) describe your variable"
 }
+
+variable "firewall_bypass_ip_cidr" {
+  type = string
+  default = null
+  description = "(optional) describe your variable"
+}

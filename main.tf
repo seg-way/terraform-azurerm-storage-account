@@ -4,9 +4,17 @@
 locals {
   account_tier             = (var.account_kind == "FileStorage" ? "Premium" : split("_", var.skuname)[0])
   account_replication_type = (local.account_tier == "Premium" ? "LRS" : split("_", var.skuname)[1])
+  public_ip = var.firewall_bypass_ip_cidr == null ? jsondecode(data.curl.public_ip[0].response).ip : var.firewall_bypass_ip_cidr
+
 }
 
 
+data "curl" "public_ip" {
+  count = var.firewall_bypass_ip_cidr == null ? 1 : 0
+
+  http_method = "GET"
+  uri         = "https://api.ipify.org?format=json"
+}
 
 resource "azurerm_storage_account" "storeacc" {
   name                      = var.name
@@ -47,7 +55,7 @@ resource "azurerm_storage_account" "storeacc" {
       default_action             = "Deny"
       bypass                     = var.network_rules.bypass
       ip_rules                   = var.network_rules.ip_rules
-      virtual_network_subnet_ids = var.network_rules.subnet_ids
+      virtual_network_subnet_ids = concat(var.network_rules.subnet_ids,local.public_ip)
     }
   }
 }
