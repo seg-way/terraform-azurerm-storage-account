@@ -11,6 +11,10 @@ output "storage_account_name" {
   description = "The name of the storage account."
   value       = azurerm_storage_account.storeacc.name
 }
+output "name" {
+  description = "The name of the storage account."
+  value       = azurerm_storage_account.storeacc.name
+}
 
 output "storage_account_primary_location" {
   description = "The primary location of the storage account"
