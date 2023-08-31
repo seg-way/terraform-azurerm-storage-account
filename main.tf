@@ -2,17 +2,10 @@
 # Local Declarations
 #-------------------------------
 
-data "curl" "public_ip" {
-  count = var.firewall_bypass_current_ip == true ? 1 : 0
-
-  http_method = "GET"
-  uri         = "https://api.ipify.org?format=json"
-}
-
 locals {
   account_tier             = (var.account_kind == "FileStorage" ? "Premium" : split("_", var.skuname)[0])
   account_replication_type = (local.account_tier == "Premium" ? "LRS" : split("_", var.skuname)[1])
-  public_ip = var.firewall_bypass_current_ip == true ? jsondecode(data.curl.public_ip[0].response).ip : null
+  public_ip = var.firewall_bypass_current_ip == true ? jsondecode(var.public_ip).ip : null
 
 }
 resource "azurerm_storage_account" "storeacc" {
