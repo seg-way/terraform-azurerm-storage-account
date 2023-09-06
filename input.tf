@@ -112,8 +112,3 @@ variable "firewall_bypass_current_ip" {
   default = false
   description = "(optional) describe your variable"
 }
-variable "public_ip" {
-  type = string
-  default = null
-  description = "(optional) describe your variable"
-}

@@ -5,8 +5,7 @@
 locals {
   account_tier             = (var.account_kind == "FileStorage" ? "Premium" : split("_", var.skuname)[0])
   account_replication_type = (local.account_tier == "Premium" ? "LRS" : split("_", var.skuname)[1])
-  public_ip = var.firewall_bypass_current_ip == true ? jsondecode(var.public_ip).ip : null
-
+  
 }
 resource "azurerm_storage_account" "storeacc" {
   name                      = var.name
@@ -46,7 +45,7 @@ resource "azurerm_storage_account" "storeacc" {
     content {
       default_action             = "Deny"
       bypass                     = var.network_rules.bypass
-      ip_rules                   = concat(var.network_rules.ip_rules,local.public_ip)
+      ip_rules                   = var.network_rules.ip_rules
       virtual_network_subnet_ids = var.network_rules.subnet_ids
     }
   }
