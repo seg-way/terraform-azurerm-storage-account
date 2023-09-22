@@ -18,7 +18,7 @@ resource "azurerm_storage_account" "storeacc" {
   min_tls_version           = var.min_tls_version
   tags                      = var.tags
 
-  public_network_access_enabled = false
+  public_network_access_enabled = var.public_network_access_enabled
 
   dynamic "identity" {
     for_each = var.managed_identity_type != null ? [1] : []
@@ -43,9 +43,9 @@ resource "azurerm_storage_account" "storeacc" {
   dynamic "network_rules" {
     for_each = var.network_rules != null ? ["true"] : []
     content {
-      default_action             = "Deny"
+      default_action             = var.network_rules.default_action
       bypass                     = var.network_rules.bypass
-      ip_rules                   = var.public_network_access_enabled ? null : var.network_rules.ip_rules
+      ip_rules                   = var.network_rules.ip_rules
       virtual_network_subnet_ids = var.network_rules.subnet_ids
     }
   }
