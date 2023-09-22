@@ -45,7 +45,7 @@ resource "azurerm_storage_account" "storeacc" {
     content {
       default_action             = "Deny"
       bypass                     = var.network_rules.bypass
-      ip_rules                   = var.public_network_access_enabled ? null : [var.network_rules.ip_rules]
+      ip_rules                   = var.public_network_access_enabled ? [] : [var.network_rules.ip_rules]
       virtual_network_subnet_ids = var.network_rules.subnet_ids
     }
   }
