@@ -41,11 +41,11 @@ resource "azurerm_storage_account" "storeacc" {
   }
 
   dynamic "network_rules" {
-    for_each = var.public_network_access_enabled != true ? ["true"] : []
+    for_each = var.network_rules != null ? ["true"] : []
     content {
       default_action             = "Deny"
       bypass                     = var.network_rules.bypass
-      ip_rules                   = var.network_rules.ip_rules
+      ip_rules                   = var.public_network_access_enabled ? null : [var.network_rules.ip_rules]
       virtual_network_subnet_ids = var.network_rules.subnet_ids
     }
   }
